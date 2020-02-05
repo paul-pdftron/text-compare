@@ -1,0 +1,17 @@
+{
+  "name": "textcompare",
+  "version": "1.0.0",
+  "description": "",
+  "main": "diff.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "start": "npx http-server",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "npm run download-webviewer",
+    "download-webviewer": "npx @pdftron/webviewer-downloader --webviewerLocation lib"
+  },
+  "author": "",
+  "license": "ISC"
+}

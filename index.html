@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+    #wrapper {
+      display: flex;
+    }
+
+    pre {
+      margin-right: 50px;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="wrapper">
+      <pre id="doc1-display"></pre>
+      <pre id="display"></pre>
+      <pre id="doc2-display"></pre>
+    </div>
+    <script src="lib/core/CoreControls.js"></script>
+    <script src="diff.js"></script>
+    <script>
+
+    const loadText = (doc, pageIndex) => {
+      return new Promise(resolve => {
+        doc.loadPageText(pageIndex, (text) => {
+          resolve(text);
+        });
+      });
+    };
+
+    CoreControls.setWorkerPath('lib/core');
+    const init = async function() {
+      const doc1 = await CoreControls.createDocument(window.location.origin + '/test_doc_1_Redacted.pdf');
+      const doc2 = await CoreControls.createDocument(window.location.origin + '/test_doc_2_Redacted.pdf');
+
+      const [text1, text2] = await Promise.all([loadText(doc1, 0), loadText(doc2, 0)]);
+
+      document.getElementById('doc1-display').textContent = text1;
+      document.getElementById('doc2-display').textContent = text2;
+
+      let color = '';
+      let span = null;
+
+      var diff = Diff.diffChars(text1, text2),
+          display = document.getElementById('display'),
+          fragment = document.createDocumentFragment();
+
+      diff.forEach(function(part){
+        color = part.added ? 'blue' :
+          part.removed ? 'red' : 'grey';
+        span = document.createElement('span');
+        span.style.color = color;
+        span.appendChild(document
+          .createTextNode(part.value));
+        fragment.appendChild(span);
+      });
+
+      display.appendChild(fragment);
+
+    };
+
+    init();
+    </script>
+  </body>
+</html>
